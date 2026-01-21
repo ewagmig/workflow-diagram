@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiK Audit Workflow Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+            min-height: 100vh;
+            padding: 40px;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .certik-banner {
+            display: block;
+            height: 48px;
+            margin: 0 auto 16px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+        .workflow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .phase {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+        }
+        .phase-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        .phase-content {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .phase-title .icon {
+            font-size: 1.5rem;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        .product-card.internal {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        .product-card.internal:hover {
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+        }
+        .product-card.external {
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        .product-card.external:hover {
+            border-color: rgba(34, 197, 94, 0.6);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+        }
+        .product-name {
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .product-name a {
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+        }
+        .product-name a:visited {
+            color: inherit;
+        }
+        .product-name a:hover,
+        .product-name a:focus {
+            text-decoration: underline;
+        }
+        .product-tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .product-tag.internal {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+        .product-tag.external {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+        .product-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        .arrow {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        .arrow svg {
+            width: 40px;
+            height: 40px;
+            color: #64748b;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        .tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .tool-badge {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #60a5fa;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .legend-dot.internal {
+            background: #8b5cf6;
+        }
+        .legend-dot.external {
+            background: #22c55e;
+        }
+        .flow-indicators {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 12px;
+        }
+        .flow-step {
+            text-align: center;
+            flex: 1;
+        }
+        .flow-step-title {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .flow-step-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="certik-banner" src="https://www.certik.com/_app/immutable/assets/certik-logotype-h-w.DyNEOYZy.svg" alt="CertiK logotype" />
+        <h1>CertiK Security Audit Platform</h1>
+        <p class="subtitle">End-to-End Audit Workflow & Product Ecosystem</p>
+
+        <div class="workflow-container">
+            <!-- Phase 1: Audit Engagement -->
+            <div class="phase">
+                <div class="phase-number">1</div>
+                <div class="phase-content">
+                    <div class="phase-title">
+                        <span class="icon">🔍</span>
+                        Audit Engagement Phase
+                    </div>
+                    <p style="color: #94a3b8; margin-bottom: 15px;">Comprehensive security analysis using automated tools and expert manual review</p>
+
+                    <div class="product-card internal" style="margin-bottom: 15px;">
+                        <div class="product-name">
+                            <span>⚡</span>
+                            <a href="https://acc.audit.certikpowered.info/project/075b0bc0-f5ad-11f0-81c6-0567193c99e4">Accelerator</a>
+                            <span class="product-tag internal">Internal</span>
+                        </div>
+                        <p class="product-desc">Central audit platform where findings are registered, tracked, and managed throughout the audit lifecycle</p>
+                        <div class="tools-list">
+                            <span class="tool-badge">🔧 Semgrep Rules</span>
+                            <span class="tool-badge">📋 Solidity Checkers</span>
+                            <span class="tool-badge">👨‍💻 Expert Manual Review</span>
+                        </div>
+                        <div class="tools-list" style="margin-top: 10px;">
+                            <span class="tool-badge">🎬 Demo: Chocolate Coin (Stablecoin)</span>
+                            <a class="tool-badge" href="https://docs.google.com/presentation/d/1b0OVx-rJ6uYweRDpIPzSRtntXMhT6gC5AGID2VeHZ6E/edit?usp=sharing">📎 Reference Deck</a>
+                        </div>
+                    </div>
+
+                    <div class="products-grid">
+                        <div class="product-card internal">
+                            <div class="product-name">
+                                <span>🤖</span>
+                                AI Flow
+                                <span class="product-tag internal">Internal</span>
+                            </div>
+                            <p class="product-desc">AI-powered code analysis and vulnerability detection pipeline</p>
+                        </div>
+                        <div class="product-card internal">
+                            <div class="product-name">
+                                <span>🎯</span>
+                                AI ACC
+                                <span class="product-tag internal">Internal</span>
+                            </div>
+                            <p class="product-desc">AI-assisted accuracy checking for comprehensive coverage</p>
+                        </div>
+                        <div class="product-card internal">
+                            <div class="product-name">
+                                <span>⛓️</span>
+                                Chain Scanner
+                                <span class="product-tag internal">Internal</span>
+                            </div>
+                            <p class="product-desc">Dynamic vulnerability scanning for EVM-compatible chains</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+
+            <!-- Phase 2: Client Remediation -->
+            <div class="phase">
+                <div class="phase-number">2</div>
+                <div class="phase-content">
+                    <div class="phase-title">
+                        <span class="icon">💬</span>
+                        Client Remediation Phase
+                    </div>
+                    <p style="color: #94a3b8; margin-bottom: 15px;">Collaborative phase where clients review findings and implement fixes</p>
+
+                    <div class="product-card external" style="margin-bottom: 15px;">
+                        <div class="product-name">
+                            <span>🌐</span>
+                            <a href="https://acc.audit.certikpowered.info/project/ca5c7a30-6209-11ee-96e2-2187858a8193/report/published?version=preliminary-20231101T010641Z">Skyharbor Portal</a>
+                            <span class="product-tag external">External</span>
+                        </div>
+                        <p class="product-desc">Client portal for viewing audit reports, tracking findings, and commenting on specific issues during remediation</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+
+            <!-- Phase 3: Final Report Release -->
+            <div class="phase">
+                <div class="phase-number">3</div>
+                <div class="phase-content">
+                    <div class="phase-title">
+                        <span class="icon">🚀</span>
+                        Final Report Release Phase
+                    </div>
+                    <p style="color: #94a3b8; margin-bottom: 15px;">Public release of audit results for community transparency</p>
+
+                    <div class="product-card external">
+                        <div class="product-name">
+                            <span>🌍</span>
+                            <a href="https://skynet.certik.com/leaderboards/stablecoin">Skynet Webpage</a>
+                            <span class="product-tag external">External</span>
+                        </div>
+                        <p class="product-desc">Client profile created and audit report published for public access, demonstrating security commitment to the community</p>
+                        <div class="tools-list">
+                            <span class="tool-badge">📄 Public Audit Report</span>
+                            <span class="tool-badge">👤 Client Profile</span>
+                            <span class="tool-badge">🔓 Public Access</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flow Summary -->
+        <div class="flow-indicators">
+            <div class="flow-step">
+                <div class="flow-step-title">Data Flow</div>
+                <div class="flow-step-value">Accelerator → Skyharbor → Skynet</div>
+            </div>
+            <div class="flow-step">
+                <div class="flow-step-title">Access Level</div>
+                <div class="flow-step-value">Internal → Client → Public</div>
+            </div>
+            <div class="flow-step">
+                <div class="flow-step-title">Stakeholders</div>
+                <div class="flow-step-value">Auditors → Client → Community</div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot internal"></div>
+                <span>Internal Tools (CertiK Team)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot external"></div>
+                <span>External Products (Clients/Public)</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
